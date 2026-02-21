@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ABO信息素 · 精神体新显 · 均衡概率</title>
+    <style>
+        /* 苹果风格 —— 干净、留白、温和 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            padding: 32px 24px 36px;
+        }
+
+        .landing { text-align: center; padding: 24px 12px 30px; }
+        .landing h1 {
+            font-size: 2.8rem; font-weight: 500; letter-spacing: -0.015em;
+            color: #1d1c1f; margin-bottom: 8px;
+        }
+        .landing .sub {
+            font-size: 1.1rem; color: #86868b; margin-bottom: 36px;
+            font-weight: 400; letter-spacing: 0.3px;
+        }
+        .result-count {
+            font-size: 1.2rem; color: #1d1c1f; margin-bottom: 48px; font-weight: 350;
+        }
+        .result-count .number {
+            background: #f0f0f2; padding: 6px 12px; border-radius: 60px; font-weight: 500;
+        }
+        .enter-btn {
+            background: #1d1c1f; color: white; border: none; font-size: 1.6rem;
+            padding: 18px 56px; border-radius: 60px; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08); transition: background 0.2s;
+        }
+        .enter-btn:active { background: #2d2c30; transform: scale(0.97); }
+        .footer-note { color: #86868b; margin-top: 40px; font-size: 0.9rem; }
+
+        .test-card { padding: 4px 0 20px; }
+        .test-header {
+            font-size: 1.9rem; font-weight: 350; color: #1d1c1f;
+            margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid #e9e9ed;
+        }
+        .question-item {
+            margin-bottom: 32px; opacity: 0; animation: fadeIn 0.4s ease forwards;
+            animation-delay: calc(0.05s * var(--q-index));
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-num {
+            display: inline-block; background: #f0f0f2; color: #1d1c1f;
+            width: 30px; height: 30px; line-height: 30px; text-align: center;
+            border-radius: 30px; margin-right: 12px; font-weight: 500;
+        }
+        .q-text { font-size: 1.1rem; font-weight: 440; color: #1d1c1f; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+        .option-btn {
+            background: #f8f9fa; border: 1px solid #e0e0e5; padding: 16px 22px;
+            border-radius: 18px; font-size: 1rem; color: #1d1c1f; text-align: left;
+            cursor: pointer; transition: background 0.15s, border 0.15s;
+        }
+        .option-btn.selected {
+            background: #e9e9ed; border-color: #aeaeb2; font-weight: 440;
+        }
+        .option-btn:active { background: #e0e0e5; }
+        .action-bar { display: flex; justify-content: center; margin: 32px 0 12px; }
+        .primary-btn {
+            background: #1d1c1f; color: white; border: none; font-size: 1.4rem;
+            padding: 18px 48px; border-radius: 60px; cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+        }
+        .primary-btn:active { background: #2d2c30; }
+
+        .result-area {
+            background: #ffffff; border-radius: 32px; padding: 28px 20px 40px;
+            margin-top: 6px; text-align: center;
+        }
+        .result-icons { font-size: 5rem; line-height: 1.2; margin-bottom: 16px; letter-spacing: 8px; }
+        .result-title { font-size: 1.3rem; font-weight: 350; color: #86868b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .abo-type { font-size: 3.8rem; font-weight: 500; color: #1d1c1f; line-height: 1.1; margin-bottom: 0.6rem; }
+        .scent-text {
+            font-size: 2.2rem; font-weight: 380; color: #4a4a50; margin: 1.5rem 0 0.5rem;
+            background: #f8f9fa; padding: 12px 20px; border-radius: 60px; display: inline-block;
+            border: 1px solid #eaeaf0;
+        }
+        /* 精神体样式：小两号，粗体，无背景 */
+        .spirit-text {
+            font-size: 1.4rem;          /* 比 scent-text 小一些 */
+            font-weight: 600;            /* 粗体 */
+            color: #4a4a50;
+            margin: 0.25rem 0 1.5rem 0;  /* 上下间距 */
+            letter-spacing: 0.02em;
+        }
+        .story {
+            background: transparent; padding: 28px 8px 20px;
+            margin: 36px 0 24px; border-top: 1px solid #e9e9ed; border-bottom: 1px solid #e9e9ed;
+            text-align: left; font-size: 1.1rem; color: #2c2c2e; line-height: 1.7;
+        }
+        .quote {
+            font-size: 1rem; color: #5f5f66; margin: 24px 0 28px; padding-left: 20px;
+            border-left: 4px solid #c6c6c8; text-align: left; font-style: italic; line-height: 1.6;
+        }
+        .quote-author { display: block; text-align: right; margin-top: 10px; color: #8a8a90; font-style: normal; }
+        .reset-btn {
+            background: transparent; color: #1d1c1f; border: 1.5px solid #c6c6c8;
+            padding: 16px 40px; border-radius: 60px; font-size: 1.2rem; font-weight: 450;
+            cursor: pointer; margin-top: 12px; background: #ffffff;
+        }
+        .reset-btn:active { background: #f8f9fa; border-color: #9a9aa0; }
+        .hidden { display: none !important; }
+        .toast-warning {
+            background: #ffffff; border-left: 5px solid #ff9f0a; padding: 16px 22px;
+            border-radius: 18px; margin-bottom: 28px; border: 1px solid #ffd60a;
+            color: #1d1c1f; font-weight: 450; text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- 起始页 -->
+    <div id="landingPage" class="landing">
+        <h1>ABO 信息素</h1>
+        <div class="sub">寻找你的命中注定的味道</div>
+        <div class="result-count"><span class="number">256</span> 种可能结果</div>
+        <button class="enter-btn" id="enterTestBtn">开始测试</button>
+        <div class="footer-note">25道题 · 随机信息素</div>
+    </div>
+
+    <!-- 测试页 -->
+    <div id="quizCard" class="test-card hidden">
+        <div class="test-header">BE YOUR WEIRD SELF</div>
+        <div id="questionsContainer"></div>
+        <div class="action-bar"><button class="primary-btn" id="submitBtn">查看结果</button></div>
+    </div>
+
+    <!-- 结果页 (调整了结构：精神体独立于 scent 下方) -->
+    <div id="resultCard" class="result-area hidden">
+        <div class="result-icons" id="resultIcons">👑🌲</div>
+        <div class="result-title">你的身份</div>
+        <span class="abo-type" id="aboResult">Alpha</span>
+        <span class="scent-text" id="scentResult">木质 · 雪松</span>
+        <!-- 精神体独立行，粗体小两号，无背景 -->
+        <div class="spirit-text" id="spiritDisplay">✨ 精神体 · 藏狐</div>
+
+        <div class="story" id="storyText">你习惯独自生长，在无人看见的地方深深扎根。</div>
+        <div class="quote" id="quoteText">“其实人跟树是一样的”<span class="quote-author">—— 尼采</span></div>
+        <button class="reset-btn" id="resetBtn">⟲ 重新测试</button>
+        <div style="margin-top:22px; color:#8b8b8b;">信息素每次随机 · 结果仅供娱乐</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // ---------- 题目数据 (25题) 分数经过均衡设计 ----------
+    const questions = [
+        { text: "在社交场合中，你更倾向于？", options: [
+            { text: "成为焦点，主动交谈", abo: {a:3,b:0,o:0}, scent: {woody:2,spicy:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "安静观察，选择性参与", abo: {a:1,b:2,o:0}, scent: {woody:2,marine:1,floral:0,fruity:0,spicy:0,other:0} },
+            { text: "跟随朋友，避免陌生交流", abo: {a:0,b:1,o:2}, scent: {floral:2,fruity:1,woody:0,spicy:0,marine:0,other:0} },
+            { text: "无所谓，看心情", abo: {a:1,b:1,o:1}, scent: {woody:1,floral:1,fruity:1,spicy:1,marine:0,other:0} }
+        ]},
+        { text: "面对压力和挑战，你的第一反应是？", options: [
+            { text: "迎难而上，充满斗志", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "冷静分析，寻找对策", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:1,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "寻求他人帮助或安慰", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:1,woody:0,spicy:0,marine:0,other:0} },
+            { text: "逃避或拖延", abo: {a:1,b:1,o:1}, scent: {fruity:2,marine:1,other:1,woody:0,spicy:0,floral:0} }
+        ]},
+        { text: "你更喜欢的休闲活动是？", options: [
+            { text: "户外冒险运动", abo: {a:3,b:0,o:0}, scent: {woody:2,spicy:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "安静的阅读或冥想", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:1,floral:0,fruity:0,spicy:0,other:0} },
+            { text: "与朋友聚会聊天", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,woody:0,spicy:0,marine:0,other:0} },
+            { text: "手工或艺术创作", abo: {a:1,b:1,o:1}, scent: {floral:2,woody:1,other:1,fruity:0,spicy:0,marine:0} }
+        ]},
+        { text: "你认为自己在团队中通常扮演什么角色？", options: [
+            { text: "领导者，发号施令", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "执行者，完成任务", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:1,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "协调者，维护和谐", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:1,woody:0,spicy:0,marine:0,other:0} },
+            { text: "支持者，提供帮助", abo: {a:1,b:1,o:1}, scent: {floral:2,fruity:2,woody:0,spicy:0,marine:0,other:0} }
+        ]},
+        { text: "你的情绪波动通常？", options: [
+            { text: "非常稳定，不易受影响", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,floral:0,fruity:0,spicy:0,other:0} },
+            { text: "偶尔起伏，但能控制", abo: {a:2,b:1,o:0}, scent: {woody:1,spicy:1,floral:1,fruity:0,marine:0,other:0} },
+            { text: "敏感多变，容易共情", abo: {a:0,b:0,o:3}, scent: {floral:3,fruity:2,woody:0,spicy:0,marine:0,other:0} },
+            { text: "压抑情绪，不轻易表露", abo: {a:2,b:0,o:1}, scent: {spicy:2,woody:2,other:0,floral:0,fruity:0,marine:0} }
+        ]},
+        { text: "你更喜欢哪种类型的电影/书籍？", options: [
+            { text: "动作/冒险", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "科幻/悬疑", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:1,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "浪漫/爱情", abo: {a:0,b:0,o:3}, scent: {floral:3,fruity:2,woody:0,spicy:0,marine:0,other:0} },
+            { text: "喜剧/轻松", abo: {a:1,b:1,o:1}, scent: {fruity:2,floral:1,other:1,woody:0,spicy:0,marine:0} }
+        ]},
+        { text: "对于恋爱关系，你更看重？", options: [
+            { text: "激情与征服", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "平等与陪伴", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,floral:0,fruity:0,spicy:0,other:0} },
+            { text: "被呵护与保护", abo: {a:0,b:0,o:3}, scent: {floral:3,fruity:1,woody:0,spicy:0,marine:0,other:0} },
+            { text: "自由与空间", abo: {a:1,b:1,o:1}, scent: {woody:2,marine:1,spicy:0,floral:0,fruity:0,other:0} }
+        ]},
+        { text: "你通常如何做决定？", options: [
+            { text: "凭直觉，快速果断", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "收集信息，理性分析", abo: {a:0,b:3,o:0}, scent: {woody:3,marine:1,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "参考他人意见，犹豫不决", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:1,woody:0,spicy:0,marine:0} },
+            { text: "随遇而安，不太纠结", abo: {a:1,b:1,o:1}, scent: {fruity:2,marine:2,other:0,woody:0,spicy:0,floral:0} }
+        ]},
+        { text: "你更向往哪种生活方式？", options: [
+            { text: "充满挑战和竞争", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "稳定安逸，有规律", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "自由浪漫，随心所欲", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "服务他人，被需要", abo: {a:1,b:1,o:1}, scent: {floral:3,fruity:1,other:1,woody:0,spicy:0,marine:0} }
+        ]},
+        { text: "你的房间/办公桌通常？", options: [
+            { text: "井井有条，一切归位", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "乱中有序，自己找得到", abo: {a:2,b:1,o:0}, scent: {spicy:2,woody:1,other:1,floral:0,fruity:0,marine:0} },
+            { text: "随心所欲，经常凌乱", abo: {a:0,b:0,o:3}, scent: {fruity:2,floral:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "极简风格，很少物品", abo: {a:1,b:1,o:1}, scent: {marine:2,woody:2,spicy:0,floral:0,fruity:0,other:0} }
+        ]},
+        { text: "你更喜欢吃哪种口味的食物？", options: [
+            { text: "辛辣刺激（麻辣火锅）", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "清淡原味（清蒸）", abo: {a:0,b:3,o:0}, scent: {marine:2,woody:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "甜腻可口（甜点）", abo: {a:0,b:0,o:3}, scent: {fruity:3,floral:2,woody:0,spicy:0,marine:0,other:0} },
+            { text: "浓郁醇厚（红烧肉）", abo: {a:1,b:1,o:1}, scent: {woody:2,spicy:2,other:0,floral:0,fruity:0,marine:0} }
+        ]},
+        { text: "遇到陌生人，你的态度是？", options: [
+            { text: "主动结识，扩展人脉", abo: {a:3,b:0,o:0}, scent: {spicy:2,fruity:1,other:0,woody:0,floral:0,marine:0} },
+            { text: "礼貌客气，保持距离", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "害羞内向，等待对方主动", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "观察判断，再决定如何交往", abo: {a:1,b:1,o:1}, scent: {woody:2,spicy:1,other:1,marine:0,floral:0,fruity:0} }
+        ]},
+        { text: "你更擅长处理哪种类型的工作？", options: [
+            { text: "竞争性强的项目", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "需要细致耐心的任务", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "与人沟通协调的职位", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "创意性艺术类工作", abo: {a:1,b:1,o:1}, scent: {floral:2,fruity:2,woody:1,other:1,spicy:0,marine:0} }
+        ]},
+        { text: "你认为自己最大的优点是？", options: [
+            { text: "勇敢果断", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "稳重可靠", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "温柔体贴", abo: {a:0,b:0,o:3}, scent: {floral:3,fruity:1,other:0,woody:0,spicy:0,marine:0} },
+            { text: "聪明机智", abo: {a:1,b:1,o:1}, scent: {woody:1,spicy:1,marine:1,other:1,floral:0,fruity:0} }
+        ]},
+        { text: "你更容易被哪种人吸引？", options: [
+            { text: "强大自信的领导者", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "温和包容的陪伴者", abo: {a:0,b:3,o:0}, scent: {floral:2,marine:2,woody:0,spicy:0,fruity:0,other:0} },
+            { text: "需要被呵护的柔软内心", abo: {a:0,b:0,o:3}, scent: {fruity:2,floral:2,other:1,woody:0,spicy:0,marine:0} },
+            { text: "神秘独立的气质型", abo: {a:1,b:1,o:1}, scent: {woody:2,spicy:1,marine:1,other:1,floral:0,fruity:0} }
+        ]},
+        { text: "你平时说话的音量？", options: [
+            { text: "洪亮有力", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:1,other:0,floral:0,fruity:0,marine:0} },
+            { text: "适中平和", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "轻柔细小", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "根据场合调整", abo: {a:1,b:1,o:1}, scent: {woody:1,floral:1,fruity:1,spicy:1,marine:1,other:2} }
+        ]},
+        { text: "你对未来的规划？", options: [
+            { text: "目标明确，野心勃勃", abo: {a:3,b:0,o:0}, scent: {spicy:3,woody:1,floral:0,fruity:0,marine:0,other:0} },
+            { text: "按部就班，稳中求进", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "随遇而安，享受当下", abo: {a:0,b:0,o:3}, scent: {fruity:2,floral:2,other:1,woody:0,spicy:0,marine:0} },
+            { text: "多种可能，灵活调整", abo: {a:1,b:1,o:1}, scent: {woody:1,marine:1,spicy:1,other:2,floral:0,fruity:0} }
+        ]},
+        { text: "你更喜欢哪种动物？", options: [
+            { text: "狼", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "鹿", abo: {a:0,b:3,o:0}, scent: {woody:2,marine:1,other:1,spicy:0,floral:0,fruity:0} },
+            { text: "猫", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "海豚", abo: {a:1,b:1,o:1}, scent: {marine:3,fruity:1,other:1,woody:0,spicy:0,floral:0} }
+        ]},
+        { text: "你对气味的偏好？", options: [
+            { text: "浓郁强烈的香味", abo: {a:2,b:1,o:0}, scent: {spicy:3,woody:2,floral:0,fruity:0,marine:0,other:0} },
+            { text: "清淡自然的味道", abo: {a:0,b:2,o:1}, scent: {marine:2,woody:2,spicy:0,floral:0,fruity:0,other:0} },
+            { text: "甜美可爱的香气", abo: {a:0,b:1,o:2}, scent: {fruity:3,floral:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "特别的味道（如旧书、雨后）", abo: {a:1,b:1,o:1}, scent: {other:4,woody:1,floral:0,fruity:0,spicy:0,marine:0} }
+        ]},
+        { text: "你回忆往事时，更容易想起？", options: [
+            { text: "自己取得成就的时刻", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:2,other:0,floral:0,fruity:0,marine:0} },
+            { text: "与朋友共度的温馨时光", abo: {a:0,b:3,o:0}, scent: {floral:2,fruity:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "被他人关心帮助的瞬间", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:1,woody:0,spicy:0,marine:0} },
+            { text: "独自思考和探索的经历", abo: {a:1,b:1,o:1}, scent: {woody:2,marine:2,other:1,spicy:0,floral:0,fruity:0} }
+        ]},
+        { text: "你更喜欢哪种季节？", options: [
+            { text: "夏天", abo: {a:2,b:1,o:0}, scent: {spicy:2,fruity:2,other:1,woody:0,floral:0,marine:0} },
+            { text: "冬天", abo: {a:0,b:2,o:1}, scent: {woody:2,marine:2,other:0,spicy:0,floral:0,fruity:0} },
+            { text: "春天", abo: {a:0,b:1,o:2}, scent: {floral:3,fruity:1,other:0,woody:0,spicy:0,marine:0} },
+            { text: "秋天", abo: {a:1,b:1,o:1}, scent: {woody:2,spicy:1,fruity:1,other:1,floral:0,marine:0} }
+        ]},
+        { text: "如果可以选择超能力，你想要？", options: [
+            { text: "强大力量/控制力", abo: {a:3,b:0,o:0}, scent: {spicy:2,woody:2,other:0,floral:0,fruity:0,marine:0} },
+            { text: "心灵感应/读心术", abo: {a:0,b:3,o:0}, scent: {marine:2,floral:2,other:1,woody:0,spicy:0,fruity:0} },
+            { text: "隐身/治愈", abo: {a:0,b:0,o:3}, scent: {floral:2,fruity:2,other:1,woody:0,spicy:0,marine:0} },
+            { text: "预知未来/时间操控", abo: {a:1,b:1,o:1}, scent: {woody:2,spicy:1,marine:1,other:2,floral:0,fruity:0} }
+        ]},
+        // 第23题 新增
+        { text: "你走进一间屋子，最先注意到的是什么味道？", options: [
+            { text: "刚出炉的面包香", abo: {a:1,b:1,o:1}, scent: {fruity:2,floral:2,other:0,woody:0,spicy:0,marine:0} },
+            { text: "一股说不清的特别味儿", abo: {a:1,b:1,o:1}, scent: {other:3,woody:1,spicy:1,floral:0,fruity:0,marine:0} },
+            { text: "淡淡的汽油味", abo: {a:1,b:1,o:1}, scent: {other:3,spicy:1,woody:1,floral:0,fruity:0,marine:0} },
+            { text: "旧书和纸张的味道", abo: {a:1,b:1,o:1}, scent: {other:3,woody:2,floral:0,fruity:0,spicy:0,marine:0} }
+        ]},
+        // 第24题 新增
+        { text: "如果必须用一种味道形容你的人生，你希望是？", options: [
+            { text: "甜蜜蜜的水蜜桃", abo: {a:1,b:1,o:1}, scent: {fruity:3,floral:1,other:0,woody:0,spicy:0,marine:0} },
+            { text: "刺激的臭豆腐", abo: {a:1,b:1,o:1}, scent: {other:4,spicy:1,woody:0,floral:0,fruity:0,marine:0} },
+            { text: "沉稳的旧书纸墨味", abo: {a:1,b:1,o:1}, scent: {other:3,woody:2,spicy:0,floral:0,fruity:0,marine:0} },
+            { text: "清新的海风", abo: {a:1,b:1,o:1}, scent: {marine:3,other:1,woody:0,spicy:0,floral:0,fruity:0} }
+        ]},
+        // 第25题 新增
+        { text: "你觉得自己在朋友眼中更像什么？", options: [
+            { text: "永远靠谱的瑞士军刀", abo: {a:2,b:1,o:0}, scent: {woody:2,other:2,spicy:1,floral:0,fruity:0,marine:0} },
+            { text: "偶尔搞怪的哈士奇", abo: {a:0,b:1,o:2}, scent: {other:3,fruity:2,floral:1,woody:0,spicy:0,marine:0} },
+            { text: "神秘又酷酷的改装车", abo: {a:2,b:0,o:1}, scent: {other:3,spicy:2,woody:1,floral:0,fruity:0,marine:0} },
+            { text: "软乎乎的抱枕", abo: {a:0,b:2,o:1}, scent: {floral:2,fruity:2,other:1,woody:0,spicy:0,marine:0} }
+        ]}
+    ];
+
+    // ---------- 气味库 ----------
+    const scentLibrary = {
+        woody:   ['雪松', '檀香', '松木', '柏木', '沉香'],
+        floral:  ['玫瑰', '茉莉', '薰衣草', '橙花', '栀子花'],
+        fruity:  ['柑橘', '苹果', '蜜桃', '草莓', '菠萝'],
+        spicy:   ['肉桂', '胡椒', '生姜', '豆蔻', '丁香'],
+        marine:  ['海风', '臭氧', '海水', '西瓜酮', '龙涎香'],
+        other:   ['臭豆腐', '榴莲', '酸菜', '汽油', '铁锈', '纸张', '旧书', '雨后泥土', '地下车库', '机油']
+    };
+
+    const aboMap = { alpha: 'Alpha', beta: 'Beta', omega: 'Omega' };
+    const scentMap = { woody: '木质', floral: '花香', fruity: '果香', spicy: '辛香', marine: '海洋', other: '其他味道' };
+
+    // ---------- 人物小传&哲思短句&精神体 ----------
+    const storyMap = {
+        alpha: {
+            woody:   "你习惯独自生长，在无人看见的地方深深扎根。你不依赖外界的温度，只相信脚下的土地和自己的年轮。",
+            floral:  "你从不隐藏自己的锋芒，也不介意被人看见。你知道真正的力量不是压倒一切，而是敢于在任何土壤里绽放。",
+            fruity:  "你相信行动胜于言语，结果证明一切。不解释，不抱怨，只把该做的事情做到极致。",
+            spicy:   "你的存在本身就有温度，不需要刻意燃烧也能让人感知。你走在自己的节奏里，不疾不徐，却从不偏离方向。",
+            marine:  "你习惯独自面对风浪，也懂得在平静时积蓄力量。你看似沉默，但每一次潮起都有你的方向。",
+            other:   "你的味道不太一样——有人说是旧书店的味道，有人说是雨后操场的味道，还有人说是老家衣柜里樟木的味道。你从不刻意掩盖，也不费心解释。后来你发现，那些愿意凑近了闻清楚的人，最后都成了你最铁的伙伴。"
+        },
+        beta: {
+            woody:   "你不争不抢，却始终在那里。你知道自己的位置，也尊重别人的边界。稳定是你的底色，可靠是你的标签。",
+            floral:  "你不必成为焦点，但也不会消失在人海。你相信存在本身就有意义，不必被看见，也无需被证明。",
+            fruity:  "你擅长在日常里找到自己的节奏，不疾不徐，刚刚好。你不追求轰轰烈烈，但每一步都走得踏实。",
+            spicy:   "你不张扬，但也不平庸。你懂得在合适的时机出现，在需要的时候发光。你的存在，是许多人安心的理由。",
+            marine:  "你包容，但不软弱；随和，但不盲从。你看似随波逐流，其实一直在自己的航道里。",
+            other:   "你是人群里的“特别款”——身上总有股让人想多闻两下的味道。有人说是刚拆封的漫画书，有人说是傍晚的烧烤摊，还有人坚称是外婆家的味道。你不刻意讨好谁的鼻子，也不为自己的味道抱歉。"
+        },
+        omega: {
+            woody:   "你看起来柔软，却有不易折断的韧性。你不对抗风暴，但风暴过后，你总在那里。",
+            floral:  "你敏感，但不脆弱。你比大多数人更早察觉世界的温度，也更能理解他人的沉默。",
+            fruity:  "你不争锋，但有自己的坚持。你知道什么时候该柔软，什么时候该站立。",
+            spicy:   "你看起来需要被保护，其实早就学会了自己撑伞。你的细腻，是你最锋利的武器。",
+            marine:  "你习惯倾听，也懂得回应。你不急着表达自己，但该说话的时候，从不缺席。",
+            other:   "你的味道有点特别——像雨后的青草，像晒过的棉被，像翻开一本旧书时的第一口气。不是所有人都能立刻适应，但一旦喜欢上，就再也忘不掉。"
+        }
+    };
+
+    const quoteMap = {
+        alpha: {
+            woody:   { text: "其实人跟树是一样的，越是向往高处的阳光，它的根就越要伸向黑暗的地底。", author: "尼采《查拉图斯特拉如是说》" },
+            floral:  { text: "玫瑰即使不叫玫瑰，也会依然芬芳。", author: "莎士比亚《罗密欧与朱丽叶》" },
+            fruity:  { text: "世界上只有一种真正的英雄主义，那就是在认清生活真相之后依然热爱生活。", author: "罗曼·罗兰" },
+            spicy:   { text: "凡不能毁灭我的，必使我更强大。", author: "尼采" },
+            marine:  { text: "人可以被毁灭，但不可以被打败。", author: "海明威《老人与海》" },
+            other:   { text: "气味这事儿吧，就像我这个人——喜欢的特别喜欢，get不到的也正常。", author: "佚名" }
+        },
+        beta: {
+            woody:   { text: "岁寒，然后知松柏之后凋也。", author: "《论语·子罕》" },
+            floral:  { text: "苔花如米小，也学牡丹开。", author: "袁枚《苔》" },
+            fruity:  { text: "人间有味是清欢。", author: "苏轼" },
+            spicy:   { text: "爱在左，同情在右，随时撒种，随时开花。", author: "冰心" },
+            marine:  { text: "海纳百川，有容乃大。", author: "林则徐" },
+            other:   { text: "众生皆有自己的味道，你的是闻过就忘不掉的那种。", author: "佚名" }
+        },
+        omega: {
+            woody:   { text: "蒲苇韧如丝，磐石无转移。", author: "《孔雀东南飞》" },
+            floral:  { text: "只有用心灵才能看得清事物本质。", author: "圣埃克苏佩里《小王子》" },
+            fruity:  { text: "万物皆有裂痕，那是光照进来的地方。", author: "科恩" },
+            spicy:   { text: "心有猛虎，细嗅蔷薇。", author: "萨松" },
+            marine:  { text: "时间是带走我的河流，但我即是河流。", author: "博尔赫斯" },
+            other:   { text: "有些人像气味一样，需要时间才能懂。", author: "佚名" }
+        }
+    };
+
+    // 精神体库 (每类三个动物)
+    const spiritMap = {
+        alpha: {
+            woody:   ['狼', '雄鹰', '棕熊'],
+            floral:  ['狮子', '孔雀', '凤凰'],
+            fruity:  ['猛虎', '豹子', '蜜獾'],
+            spicy:   ['犀牛', '野马', '雪豹'],
+            marine:  ['虎鲸', '大白鲨', '海雕'],
+            other:   ['藏狐', '白鲸', '小熊猫']
+        },
+        beta: {
+            woody:   ['鹿', '大象', '树懒'],
+            floral:  ['蝴蝶', '鹦鹉', '燕子'],
+            fruity:  ['松鼠', '浣熊', '狐狸'],
+            spicy:   ['猫头鹰', '羚羊', '岩羊'],
+            marine:  ['海豚', '海龟', '海狮'],
+            other:   ['浣熊', '水豚', '羊驼']
+        },
+        omega: {
+            woody:   ['猫', '熊猫', '考拉'],
+            floral:  ['兔', '小鹿', '绵羊'],
+            fruity:  ['刺猬', '仓鼠', '小鸟'],
+            spicy:   ['狐狸', '水獭', '雪貂'],
+            marine:  ['水母', '海獭', '企鹅'],
+            other:   ['刺猬', '狐獴', '龙猫']
+        }
+    };
+
+    const aboIcon = { alpha: '👑', beta: '🌿', omega: '🌸' };
+    const scentIcon = { woody: '🌲', floral: '🌹', fruity: '🍎', spicy: '🔥', marine: '🌊', other: '💨' };
+
+    // ---------- 预计算每个类型的最大可能得分 (用于归一化) ----------
+    function computeMaxScores() {
+        let maxABO = { alpha: 0, beta: 0, omega: 0 };
+        let maxScent = { woody: 0, floral: 0, fruity: 0, spicy: 0, marine: 0, other: 0 };
+
+        questions.forEach(q => {
+            let qMaxABO = { alpha: 0, beta: 0, omega: 0 };
+            let qMaxScent = { woody: 0, floral: 0, fruity: 0, spicy: 0, marine: 0, other: 0 };
+            q.options.forEach(opt => {
+                qMaxABO.alpha = Math.max(qMaxABO.alpha, opt.abo.a || 0);
+                qMaxABO.beta = Math.max(qMaxABO.beta, opt.abo.b || 0);
+                qMaxABO.omega = Math.max(qMaxABO.omega, opt.abo.o || 0);
+                qMaxScent.woody   = Math.max(qMaxScent.woody, opt.scent.woody || 0);
+                qMaxScent.floral  = Math.max(qMaxScent.floral, opt.scent.floral || 0);
+                qMaxScent.fruity  = Math.max(qMaxScent.fruity, opt.scent.fruity || 0);
+                qMaxScent.spicy   = Math.max(qMaxScent.spicy, opt.scent.spicy || 0);
+                qMaxScent.marine  = Math.max(qMaxScent.marine, opt.scent.marine || 0);
+                qMaxScent.other   = Math.max(qMaxScent.other, opt.scent.other || 0);
+            });
+            maxABO.alpha += qMaxABO.alpha;
+            maxABO.beta += qMaxABO.beta;
+            maxABO.omega += qMaxABO.omega;
+            maxScent.woody += qMaxScent.woody;
+            maxScent.floral += qMaxScent.floral;
+            maxScent.fruity += qMaxScent.fruity;
+            maxScent.spicy += qMaxScent.spicy;
+            maxScent.marine += qMaxScent.marine;
+            maxScent.other += qMaxScent.other;
+        });
+        return { maxABO, maxScent };
+    }
+
+    const { maxABO, maxScent } = computeMaxScores();
+
+    function weightedRandom(weights) {
+        let total = 0;
+        for (let key in weights) total += weights[key];
+        if (total <= 0) {
+            const keys = Object.keys(weights);
+            return keys[Math.floor(Math.random() * keys.length)];
+        }
+        let r = Math.random() * total;
+        for (let key in weights) {
+            if (r < weights[key]) return key;
+            r -= weights[key];
+        }
+        return Object.keys(weights)[0];
+    }
+
+    // ---------- 状态 ----------
+    let selected = new Array(questions.length).fill(null);
+
+    // DOM
+    const landingPage = document.getElementById('landingPage');
+    const quizCard = document.getElementById('quizCard');
+    const resultCard = document.getElementById('resultCard');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const enterBtn = document.getElementById('enterTestBtn');
+    const aboResultSpan = document.getElementById('aboResult');
+    const scentResultSpan = document.getElementById('scentResult');
+    const spiritDisplay = document.getElementById('spiritDisplay');
+    const storyText = document.getElementById('storyText');
+    const quoteText = document.getElementById('quoteText');
+    const resultIcons = document.getElementById('resultIcons');
+
+    enterBtn.addEventListener('click', () => {
+        landingPage.classList.add('hidden');
+        quizCard.classList.remove('hidden');
+    });
+
+    function renderQuestions() {
+        let html = '';
+        questions.forEach((q, idx) => {
+            html += `<div class="question-item" style="--q-index: ${idx};">`;
+            html += `<div><span class="q-num">${idx+1}</span><span class="q-text">${q.text}</span></div>`;
+            html += `<div class="options">`;
+            q.options.forEach((opt, optIdx) => {
+                const letter = String.fromCharCode(65 + optIdx);
+                const isSelected = (selected[idx] === optIdx);
+                const selectedClass = isSelected ? 'selected' : '';
+                html += `<button class="option-btn ${selectedClass}" data-q="${idx}" data-opt="${optIdx}">${letter}. ${opt.text}</button>`;
+            });
+            html += `</div></div>`;
+        });
+        questionsContainer.innerHTML = html;
+    }
+    renderQuestions();
+
+    questionsContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.option-btn');
+        if (!btn) return;
+        const qIdx = btn.dataset.q;
+        const optIdx = btn.dataset.opt;
+        if (qIdx===undefined || optIdx===undefined) return;
+        const parentDiv = btn.closest('.question-item');
+        parentDiv.querySelectorAll('.option-btn').forEach(opt => opt.classList.remove('selected'));
+        btn.classList.add('selected');
+        selected[parseInt(qIdx)] = parseInt(optIdx);
+    });
+
+    submitBtn.addEventListener('click', () => {
+        const missing = selected.reduce((acc, val, idx) => val===null ? acc.concat(idx+1) : acc, []);
+        if (missing.length > 0) {
+            const warn = document.createElement('div');
+            warn.className = 'toast-warning';
+            warn.innerText = `⚠ 还有 ${missing.length} 题未选 (${missing.join(', ')})`;
+            quizCard.prepend(warn);
+            setTimeout(() => warn.remove(), 3500);
+            return;
+        }
+
+        let aboScore = { alpha:0, beta:0, omega:0 };
+        let scentScore = { woody:0, floral:0, fruity:0, spicy:0, marine:0, other:0 };
+
+        for (let i=0; i<questions.length; i++) {
+            const opt = questions[i].options[selected[i]];
+            aboScore.alpha += opt.abo.a || 0;
+            aboScore.beta  += opt.abo.b || 0;
+            aboScore.omega += opt.abo.o || 0;
+            scentScore.woody  += opt.scent.woody  || 0;
+            scentScore.floral += opt.scent.floral || 0;
+            scentScore.fruity += opt.scent.fruity || 0;
+            scentScore.spicy  += opt.scent.spicy  || 0;
+            scentScore.marine += opt.scent.marine || 0;
+            scentScore.other  += opt.scent.other  || 0;
+        }
+
+        // 归一化权重
+        const normABO = {
+            alpha: aboScore.alpha / (maxABO.alpha || 1),
+            beta:  aboScore.beta  / (maxABO.beta  || 1),
+            omega: aboScore.omega / (maxABO.omega || 1)
+        };
+        const normScent = {
+            woody:   scentScore.woody   / (maxScent.woody   || 1),
+            floral:  scentScore.floral  / (maxScent.floral  || 1),
+            fruity:  scentScore.fruity  / (maxScent.fruity  || 1),
+            spicy:   scentScore.spicy   / (maxScent.spicy   || 1),
+            marine:  scentScore.marine  / (maxScent.marine  || 1),
+            other:   scentScore.other   / (maxScent.other   || 1)
+        };
+
+        const aboKey = weightedRandom(normABO);
+        const scentKey = weightedRandom(normScent);
+
+        const concreteArr = scentLibrary[scentKey];
+        const concrete = concreteArr[Math.floor(Math.random() * concreteArr.length)];
+        const spiritArr = spiritMap[aboKey][scentKey];
+        const spirit = spiritArr[Math.floor(Math.random() * spiritArr.length)];
+
+        aboResultSpan.innerText = aboMap[aboKey];
+        scentResultSpan.innerText = `${scentMap[scentKey]} · ${concrete}`;
+        // 精神体显示在独立行，粗体小两号
+        spiritDisplay.innerText = `✨ 精神体 · ${spirit}`;
+        storyText.innerText = storyMap[aboKey][scentKey];   // 不再包含精神体
+        const quote = quoteMap[aboKey][scentKey];
+        quoteText.innerHTML = `“${quote.text}”<span class="quote-author">—— ${quote.author}</span>`;
+
+        resultIcons.innerText = `${aboIcon[aboKey]} ${scentIcon[scentKey]}`;
+
+        quizCard.classList.add('hidden');
+        resultCard.classList.remove('hidden');
+    });
+
+    resetBtn.addEventListener('click', () => {
+        selected.fill(null);
+        renderQuestions();
+        resultCard.classList.add('hidden');
+        quizCard.classList.remove('hidden');
+    });
+})();
+</script>
+</body>
+</html>
